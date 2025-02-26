@@ -20,6 +20,7 @@ from datetime import datetime
 from os import getenv
 from pathlib import Path
 
+import click
 import git
 from github import Auth, Github
 from snowflake.cli._plugins.demos.test_manager import TestManager
@@ -52,6 +53,12 @@ class DemosManager:
         self.github_repo = github.get_repo(SNOWPY_REPO_NAME)
         self.demos_repo = self.__clone_repo(SNOWPY_REPO, self.snowpy_repo_dir)
         self.test_manager = TestManager(self.snowpy_libs_demos_dir)
+        self.template_dir = Path(__file__).parent.resolve().joinpath("template")
+
+    def bootstrap(self, target_path: str):
+        if Path(target_path).exists():
+            raise click.ClickException(f"Directory {target_path} must NOT exists.")
+        shutil.copytree(self.template_dir, target_path)
 
     def sync_demo(self, demo):
         sync_timestamp = self._timestamp()

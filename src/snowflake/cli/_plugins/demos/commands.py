@@ -33,6 +33,13 @@ log = logging.getLogger(__name__)
 manager = DemosManager()
 
 
+@app.command("bootstrap")
+def bootstrap(target_path, **options):
+    cc.step(f"Creating skeleton under {target_path}")
+    manager.bootstrap(target_path)
+    cc.step(f"Done")
+
+
 @app.command("sync_demo", requires_connection=True)
 def sync_demo(yml_file_path, **options) -> CommandResult:
     """
